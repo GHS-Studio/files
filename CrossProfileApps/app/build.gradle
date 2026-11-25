@@ -1,0 +1,49 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
+
+    defaultConfig {
+        applicationId "com.android.cts.crossprofileappstest"
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        release {
+            storeFile file(System.env.CPA_KEYSTORE != null ? System.env.CPA_KEYSTORE : "/root/keystores/crossprofileapps.jks")
+            storePassword System.env.CPA_STORE_PASS != null ? System.env.CPA_STORE_PASS : "cpa-release"
+            keyAlias System.env.CPA_KEY_ALIAS != null ? System.env.CPA_KEY_ALIAS : "cpa"
+            keyPassword System.env.CPA_KEY_PASS != null ? System.env.CPA_KEY_PASS : "cpa-release"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
+    androidTestImplementation 'com.google.truth:truth:1.0'
+    androidTestImplementation 'junit:junit:4.13.2'
+}
